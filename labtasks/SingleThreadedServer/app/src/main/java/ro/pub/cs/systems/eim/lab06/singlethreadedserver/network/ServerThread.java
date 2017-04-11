@@ -53,6 +53,7 @@ public class ServerThread extends Thread {
 
                 // TODO exercise 5c
                 // simulate the fact the communication routine between the server and the client takes 3 seconds
+                Thread.sleep(3000);
 
                 PrintWriter printWriter = Utilities.getWriter(socket);
                 printWriter.println(serverTextEditText.getText().toString());
@@ -67,6 +68,11 @@ public class ServerThread extends Thread {
             Log.e(Constants.TAG, "An exception has occurred: " + ioException.getMessage());
             if (Constants.DEBUG) {
                 ioException.printStackTrace();
+            }
+        } catch (InterruptedException e) {
+            Log.e(Constants.TAG, e.getMessage());
+            if (Constants.DEBUG) {
+                e.printStackTrace();
             }
         }
     }
