@@ -32,16 +32,22 @@ public class FTPServerCommunicationAsyncTask extends AsyncTask<String, String, V
             // - the value does not start with Constants.FTP_MULTILINE_END_CODE2 = "220 "
             // append the line to the welcomeMessageTextView text view content (on the UI thread !!!) - publishProgress(...)
             // close the socket
+
             String ftpServerAddress = params[0];
             socket = new Socket(ftpServerAddress, Constants.FTP_PORT);
+            Log.v(Constants.TAG, "Connected to: " + socket.getInetAddress() + ":" + socket.getLocalPort());
             BufferedReader br = Utilities.getReader(socket);
-            String line = br.readLine().toString();
-            if(line.startsWith(Constants.FTP_MULTILINE_START_CODE)){
-                line = line.replace(Constants.FTP_MULTILINE_START_CODE, "");
-            }
-            while(!line.equals(Constants.FTP_MULTILINE_END_CODE1) && !line.startsWith((Constants.FTP_MULTILINE_END_CODE2))){
-                publishProgress(line);
-                line = br.readLine().toString();
+            String line = br.readLine();
+            Log.v(Constants.TAG, "A line has been received from the FTP server: " + line);
+            if (line != null && line.startsWith(Constants.FTP_MULTILINE_START_CODE)) {
+                while ((line = br.readLine()) != null) {
+                    if (!Constants.FTP_MULTILINE_END_CODE1.equals(line) && !line.startsWith(Constants.FTP_MULTILINE_END_CODE2)) {
+                        Log.v(Constants.TAG, "A line has been received from the FTP server: " + line);
+                        publishProgress(line);
+                    } else {
+                        break;
+                    }
+                }
             }
             socket.close();
 
@@ -63,7 +69,7 @@ public class FTPServerCommunicationAsyncTask extends AsyncTask<String, String, V
     protected void onProgressUpdate(String... progres) {
         // TODO exercise 4
         // append the progress[0] to the welcomeMessageTextView text view
-        welcomeMessageTextView.setText(progres.toString());
+        welcomeMessageTextView.append(progres[0] + "\n");
     }
 
     @Override

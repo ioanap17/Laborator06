@@ -29,7 +29,7 @@ public class CommunicationThread extends Thread {
             // - get the PrintWriter object in order to write on the socket (use Utilities.getWriter())
             // - print a line containing the text in the serverTextEditText edit text
             PrintWriter pw = Utilities.getWriter(socket);
-            pw.print(serverTextEditText.getText());
+            pw.println(serverTextEditText.getText().toString());
 
             socket.close();
             Log.v(Constants.TAG, "Connection closed");
